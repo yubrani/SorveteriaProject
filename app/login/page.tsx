@@ -1,5 +1,5 @@
 import LoginForm from "../ui/login-form";
-
+export const dynamic = "force-dynamic";
 
 
 
