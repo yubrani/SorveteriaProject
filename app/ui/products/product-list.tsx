@@ -14,6 +14,13 @@ export default function ProductList({ product }: Props) {
       
       {/* Info izquierda */}
       <div className="flex flex-col">
+        {product.imageUrl && (
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="w-16 h-16 object-cover rounded-lg mb-2"
+          />
+        )}
         <h2 className="text-lg font-semibold text-gray-800">
           {product.name}
         </h2>
