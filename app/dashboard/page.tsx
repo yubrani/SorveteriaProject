@@ -1,6 +1,7 @@
+
 import { getProducts } from "@/app/lib/data";
 import Card from "@/app/ui/cards";
-
+export const dynamic = "force-dynamic";
 export default async function Dashboard() {
   const products = await getProducts(); 
 
