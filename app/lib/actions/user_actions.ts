@@ -139,7 +139,7 @@ export async function authenticate(
       email,
       password,
       redirect: true,
-      redirectTo: "/dashboard", 
+      callbackUrl: "/dashboard", 
     });
 
     return undefined;
