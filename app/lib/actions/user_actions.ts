@@ -138,7 +138,7 @@ export async function authenticate(
     await signIn("credentials", {
       email,
       password,
-      redirectTo: "/", // 👈 obligatorio en v5
+      redirectTo: "/dashboard", 
     });
 
     return undefined;

@@ -13,6 +13,7 @@ export const authConfig = {
       if (isOnDashboard) {
         return isLoggedIn; 
       }
+      
 
       
       return true;
