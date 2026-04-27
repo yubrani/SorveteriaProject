@@ -9,13 +9,17 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
 
-     
-      if (isOnDashboard) {
-        return isLoggedIn; 
-      }
-      
+      const isOnLogin = nextUrl.pathname.startsWith("/login");
 
-      
+      // 🔐 proteger dashboard
+      if (isOnDashboard && !isLoggedIn) {
+        return false;
+      }
+
+      // 🔥 CLAVE: evitar volver al login si ya estás logueado
+      if (isOnLogin && isLoggedIn) {
+        return Response.redirect(new URL("/dashboard", nextUrl));
+      }
       return true;
     },
   },
