@@ -6,7 +6,7 @@ import postgres from "postgres";
 import type { UserInfo } from "@/app/lib/definitions";
 import { authConfig } from "./auth.config";
 
-// ✅ Validar env
+// ✅ Validar variables de entorno
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL no está definida");
 }
@@ -15,10 +15,12 @@ if (!process.env.AUTH_SECRET) {
   throw new Error("AUTH_SECRET no está definido");
 }
 
-// ✅ conexión DB
-const sql = postgres(process.env.DATABASE_URL, { ssl: "require" });
+// ✅ Conexión a la DB
+const sql = postgres(process.env.DATABASE_URL, {
+  ssl: "require",
+});
 
-// ✅ función segura
+// ✅ Obtener usuario por email
 async function getUser(email: string): Promise<UserInfo | null> {
   try {
     const users = await sql<UserInfo[]>`
@@ -31,10 +33,10 @@ async function getUser(email: string): Promise<UserInfo | null> {
   }
 }
 
+// ✅ Configuración de NextAuth
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
 
-  // 🔥 CLAVE PARA PRODUCCIÓN
   secret: process.env.AUTH_SECRET,
 
   providers: [
@@ -45,6 +47,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
 
       async authorize(credentials) {
+        // 1. Validar datos con Zod
         const parsedCredentials = z
           .object({
             email: z.string().email(),
@@ -56,11 +59,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const { email, password } = parsedCredentials.data;
 
+        // 2. Buscar usuario en DB
         const user = await getUser(email);
 
-        // 🔥 evita crash
         if (!user || !user.password) return null;
 
+        // 3. Comparar password
         const passwordsMatch = await bcrypt.compare(
           password,
           user.password
@@ -68,8 +72,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!passwordsMatch) return null;
 
+        // 4. Retornar usuario (IMPORTANTE)
         return {
-          id: user.id,
+          id: Number(user.id),
           name: user.name,
           email: user.email,
           role: user.role,
@@ -81,23 +86,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: {
     strategy: "jwt",
   },
- },
-  // 🔥 IMPORTANTE (para roles y sesión estable)
- /* callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.role = user.role;
-      }
-      return token;
-    },
 
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as number;
-        session.user.role = token.role as string;
-      }
-      return session;
-    },
+  // 🔥 CLAVE: callbacks
+ callbacks: {
+  async jwt({ token, user }) {
+    if (user) {
+      return {
+        ...token,
+        id: user.id,
+        role: user.role,
+      };
+    }
+    return token;
   },
-}); */);
+
+  async session({ session, token }) {
+    if (session.user) {
+      const user = session.user as { id?: number; role?: string };
+      user.id = token.id as number;
+      user.role = token.role as string | undefined;
+    }
+    return session;
+  },
+},
+});

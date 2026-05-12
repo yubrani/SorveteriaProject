@@ -21,6 +21,15 @@ export type State ={
     };
     message?: string | null;
 };
+export type StateUpdate = {
+     errors?: {
+    name?: string[];
+    password?: string[];
+    confirmPassword?: string[];
+  };
+  message?: string | null;
+};
+
 
 export type CurrentUser = {
   id: string;
@@ -34,5 +43,12 @@ export type Product = {
     name: string;
     description: string;
     price: number;
-    imageUrl?: string;
+    image_url?: string;
+    categoryId: number;
+};
+export type Category = {
+    id: number;
+    name: string;
+    image_url: string;
+    
 };

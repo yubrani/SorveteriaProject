@@ -16,14 +16,13 @@ const FormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
   price: z.coerce.number().positive("Price must be a positive number"),
-  // ✅ Permite rutas tipo /images/cookies.jpg
+  category_id: z.string().min(1, "Category is required"),
   imageUrl: z.string().min(1, "Image is required"),
 });
 
 /* =========================
    CREATE PRODUCT
 ========================= */
-
 export async function createProduct(
   _prevState: State,
   formData: FormData
@@ -32,22 +31,25 @@ export async function createProduct(
     name: formData.get("name"),
     description: formData.get("description"),
     price: formData.get("price"),
-    imageUrl: formData.get("imageUrl"), // ✅ FIX
+    imageUrl: formData.get("imageUrl"),
+    category_id: formData.get("category_id"),
   });
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error.flatten().fieldErrors);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
-  const { name, description, price, imageUrl } = validatedFields.data;
+  const { name, description, price, imageUrl, category_id } =
+    validatedFields.data;
+
+  const categoryId = Number(category_id); // 🔥 importante
 
   try {
     await sql`
-      INSERT INTO products (name, description, price, image_url)
-      VALUES (${name}, ${description}, ${price}, ${imageUrl})
+      INSERT INTO products (name, description, price, image_url, category_id)
+      VALUES (${name}, ${description}, ${price}, ${imageUrl}, ${categoryId})
     `;
   } catch (error) {
     console.error("Error creating product:", error);
@@ -59,21 +61,6 @@ export async function createProduct(
   revalidatePath("/dashboard/products");
   redirect("/dashboard/products");
 }
-
-/* =========================
-   DELETE PRODUCT
-========================= */
-
-export async function deleteProduct(id: number) {
-  if (!id) {
-    throw new Error("Invalid ID");
-  }
-
-  await sql`DELETE FROM products WHERE id = ${id}`;
-
-  revalidatePath("/dashboard/products");
-}
-
 /* =========================
    UPDATE PRODUCT
 ========================= */
@@ -88,7 +75,8 @@ export async function updateProduct(
     name: formData.get("name"),
     description: formData.get("description"),
     price: formData.get("price"),
-    imageUrl: formData.get("imageUrl"), // ✅ FIX CLAVE
+    category_id: formData.get("category_id"),
+    imageUrl: formData.get("imageUrl"),
   });
 
   if (!productId) {
@@ -102,7 +90,7 @@ export async function updateProduct(
     };
   }
 
-  const { name, description, price, imageUrl } = validatedFields.data;
+  const { name, description, price, imageUrl, category_id } = validatedFields.data;
 
   try {
     await sql`
@@ -111,12 +99,27 @@ export async function updateProduct(
         name = ${name}, 
         description = ${description}, 
         price = ${price}, 
-        image_url = ${imageUrl}
+        image_url = ${imageUrl},
+        category_id = ${Number(category_id)}
       WHERE id = ${productId}
     `;
   } catch (error) {
     console.error("Error updating product:", error);
     return { message: "Failed to update product." };
+  }
+
+  revalidatePath("/dashboard/products");
+  redirect("/dashboard/products");
+}
+export async function deleteProduct(productId: number) {
+  try {
+    await sql`
+      DELETE FROM products
+      WHERE id = ${productId}
+    `;
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return { message: "Failed to delete product." };
   }
 
   revalidatePath("/dashboard/products");

@@ -8,6 +8,7 @@ import { State } from "@/app/lib/definitions";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 
+import { StateUpdate } from "@/app/lib/definitions";
 const sql = postgres(process.env.DATABASE_URL!);
 
 /* =========================
@@ -140,6 +141,7 @@ export async function authenticate(
       password,
       redirect: true,
       callbackUrl: "/dashboard", 
+      redirectTo: "/dashboard",
     });
 
     return undefined;
@@ -156,4 +158,65 @@ export async function authenticate(
 
     throw error;
   }
+}
+const FormSchemaUpdate = z
+  .object({
+    name: z.string().min(1, "Name is required"),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters long"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+export async function UpdateUser(
+  _prevState: StateUpdate,
+  formData: FormData,
+): Promise<StateUpdate> {
+
+  const userId = formData.get("userId") as string;
+
+const validateFields = FormSchemaUpdate.safeParse({
+  name: formData.get("name"),
+  password: formData.get("password"),
+  confirmPassword: formData.get("confirmPassword"),
+});
+   
+  if (!validateFields.success) {
+    return {
+      errors: validateFields.error.flatten().fieldErrors,
+      message: null,
+    };
+  }
+  
+  try {
+    const userData = validateFields.data;
+
+    const formattedName =
+      userData.name.charAt(0).toUpperCase() +
+      userData.name.slice(1).toLowerCase();
+
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+    await sql`
+      UPDATE users
+      SET
+        name = ${formattedName},
+        password = ${hashedPassword}
+      WHERE id = ${userId}
+    `;
+
+  } catch (error) {
+    console.error(error);
+
+    return {
+      errors: {},
+      message: "An unexpected error occurred",
+    };
+  }
+  
+  redirect("/dashboard");
 }

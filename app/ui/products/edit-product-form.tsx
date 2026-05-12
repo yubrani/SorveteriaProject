@@ -1,11 +1,22 @@
 "use client";
+
 import { useActionState } from "react";
 import { updateProduct } from "@/app/lib/actions/products_actions";
+import { Category } from "@/app/lib/definitions";
 
-export default function EditProductForm({ product }: any) {
+type Props = {
+  product: any;
+  categories: Category[];
+};
+
+export default function EditProductForm({ product, categories }: Props) {
   const [state, formAction] = useActionState(updateProduct, {
     errors: {},
   });
+
+  const labelStyles = "block text-sm font-medium text-gray-700";
+  const inputStyles =
+    "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm";
 
   return (
     <div className="max-w-xl mx-auto bg-white shadow-xl rounded-2xl p-8">
@@ -18,72 +29,87 @@ export default function EditProductForm({ product }: any) {
         <input type="hidden" name="id" value={product.id} />
 
         {/* NAME */}
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-600">
-            Name
-          </label>
+        <div>
+          <label className={labelStyles}>Name</label>
           <input
             name="name"
             defaultValue={product.name}
-            className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className={inputStyles}
           />
           {state?.errors?.name && (
             <p className="text-red-500 text-sm">
-              {state.errors.name}
+              {state.errors.name[0]}
             </p>
           )}
         </div>
 
         {/* DESCRIPTION */}
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-600">
-            Description
-          </label>
+        <div>
+          <label className={labelStyles}>Description</label>
           <textarea
             name="description"
             defaultValue={product.description}
             rows={3}
-            className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className={inputStyles}
           />
           {state?.errors?.description && (
             <p className="text-red-500 text-sm">
-              {state.errors.description}
+              {state.errors.description[0]}
+            </p>
+          )}
+        </div>
+        {/* CATEGORY */}  
+       <div className="relative">
+          <label className={labelStyles}>Categoria</label>
+            <select
+              name="category_id"
+              className={inputStyles}
+              defaultValue={product.category_id} 
+              required
+            >
+            <option value="">Selecione uma categoria</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+
+          {state.errors?.category_id && (
+            <p className="text-red-500">
+              {state.errors.category_id[0]}
             </p>
           )}
         </div>
 
         {/* PRICE */}
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-600">
-            Price
-          </label>
+        <div>
+          <label className={labelStyles}>Price</label>
           <input
             type="number"
             step="0.01"
             name="price"
             defaultValue={product.price}
-            className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className={inputStyles}
           />
           {state?.errors?.price && (
             <p className="text-red-500 text-sm">
-              {state.errors.price}
+              {state.errors.price[0]}
             </p>
           )}
         </div>
 
         {/* IMAGE */}
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-600">
-            Image URL
-          </label>
+        <div>
+          <label className={labelStyles}>Image URL</label>
           <input
             name="imageUrl"
-            defaultValue={product.imageUrl}
-            className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            defaultValue={product.image_url} // 👈 importante
+            className={inputStyles}
           />
           {state?.errors?.imageUrl && (
             <p className="text-red-500 text-sm">
-              {state.errors.imageUrl}
+              {state.errors.imageUrl[0]}
             </p>
           )}
         </div>

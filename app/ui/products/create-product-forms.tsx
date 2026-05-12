@@ -1,120 +1,150 @@
 "use client";
 
-
 import { useActionState } from "react";
 import { createProduct } from "../../lib/actions/products_actions";
 import { Button } from "../button";
 
-export default function CreateProductForm() {
+type Category = {
+  id: number;
+  name: string;
+};
+
+export default function CreateProductForm({
+  categories,
+}: {
+  categories: Category[];
+}) {
   const [state, formAction] = useActionState(createProduct, {
-    
     errors: {},
   });
 
   const labelStyles =
-    "block text-sm font-medium text-gray-700";
+    "block text-sm font-medium text-slate-600 mb-1";
 
   const inputStyles =
-    "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm";
-
-  const iconStyles =
-    "h-5 w-5 text-gray-400 absolute right-3 top-9";
+    "w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none";
 
   return (
-    <form action={formAction} className="space-y-4">
-      <div className="flex-1 rounded-3xl bg-white px-8 pb-10 pt-10 shadow-sm border border-slate-100">
-        <p className="mb-8 text-sm text-center text-slate-500 italic">
-          Vamos criar um novo produto! Preencha os campos abaixo e clique em "Criar produto" para adicionar ao catálogo.
-        </p>
+    <form action={formAction} className="flex justify-center">
+      <div className="w-full max-w-2xl rounded-3xl bg-white border border-slate-100 shadow-lg p-8 space-y-6">
 
-        {/* Name */}
-        <div className="relative">
-          <label className={labelStyles} htmlFor="name">
-            Nome do produto
-          </label>
+        {/* HEADER */}
+        <div className="text-center space-y-1">
+          <h2 className="text-2xl font-semibold text-slate-800">
+            Criar Produto
+          </h2>
+          <p className="text-sm text-slate-500">
+            Adicione um novo produto ao catálogo
+          </p>
+        </div>
+
+        {/* NAME */}
+        <div>
+          <label className={labelStyles}>Nome do produto</label>
           <input
             className={inputStyles}
-            id="name"
             name="name"
             type="text"
+            placeholder="Ex Sorvete de chocolate..."
             required
           />
-          
-
           {state.errors?.name && (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="text-xs text-red-500 mt-1">
               {state.errors.name[0]}
             </p>
           )}
         </div>
 
-        {/* Product Description */}
-        <div className="relative">
-          <label className={labelStyles} htmlFor="description">
-            Descriçao do produto
-          </label>
+        {/* DESCRIPTION */}
+        <div>
+          <label className={labelStyles}>Descrição</label>
           <input
             className={inputStyles}
-            id="description"
             name="description"
             type="text"
+            placeholder="Descrição do produto..."
             required
           />
-          
-
           {state.errors?.description && (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="text-xs text-red-500 mt-1">
               {state.errors.description[0]}
             </p>
           )}
         </div>
 
-        {/* Price */}
-        <div className="relative">
-          <label className={labelStyles} htmlFor="price">
-            Preço
-          </label>
+        {/* CATEGORY */}
+        <div>
+          <label className={labelStyles}>Categoria</label>
+          <select
+            name="category_id"
+            className={inputStyles}
+            required
+            defaultValue=""
+          >
+            <option value="" disabled>
+              Seleciona uma categoria
+            </option>
+
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+
+          {state.errors?.category_id && (
+            <p className="text-xs text-red-500 mt-1">
+              {state.errors.category_id[0]}
+            </p>
+          )}
+        </div>
+
+        {/* PRICE */}
+        <div>
+          <label className={labelStyles}>Preço</label>
           <input
             className={inputStyles}
-            id="price"
             name="price"
             type="number"
             step="0.01"
+            placeholder="0.00"
             required
           />
-          
-
           {state.errors?.price && (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="text-xs text-red-500 mt-1">
               {state.errors.price[0]}
             </p>
           )}
         </div>
 
-
-        {/*Image */}
-        <div className="relative">
-          <label className={labelStyles} htmlFor="imageUrl">
-            Url da imagem
-          </label>
+        {/* IMAGE */}
+        <div>
+          <label className={labelStyles}>URL da imagem</label>
           <input
             className={inputStyles}
-            id="imageUrl"
             name="imageUrl"
             type="text"
+            placeholder="https://..."
             required
           />
-         
           {state.errors?.imageUrl && (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="text-xs text-red-500 mt-1">
               {state.errors.imageUrl[0]}
             </p>
           )}
         </div>
 
-        <Button variant="primary">Criar produto</Button>
+        {/* BUTTON */}
+        <div className="pt-2">
+          <Button
+            variant="primary"
+            className="w-full py-2.5 text-sm font-medium rounded-xl shadow-md hover:shadow-lg transition"
+          >
+            Criar produto
+          </Button>
+        </div>
+
       </div>
     </form>
   );
 }
-    

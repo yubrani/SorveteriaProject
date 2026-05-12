@@ -1,9 +1,10 @@
 
 
 import { getProducts } from "@/app/lib/data";
-
+import Link from "next/link";
 import ProductList from "@/app/ui/products/product-list";
 import  CreateProductForm  from "@/app/ui/products/create-product-forms";
+import { ShoppingCart } from 'lucide-react';
 export default async function ProductPage() {
   const products = await getProducts();
   return (
@@ -20,6 +21,9 @@ export default async function ProductPage() {
           <button className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700">
             + Add Product
           </button>
+          <Link href="/cart" className="bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700">
+            <ShoppingCart />
+          </Link>
         </div>
 
         {/* ===== TOP GRID (FORM + PREVIEW) ===== */}
@@ -29,7 +33,7 @@ export default async function ProductPage() {
           <div className="bg-white p-6 rounded-2xl shadow-md">
             <h2 className="text-lg font-semibold mb-4">Create Product</h2>
 
-            <CreateProductForm />
+            
             
           </div>
 
@@ -46,14 +50,13 @@ export default async function ProductPage() {
 
         </div>
 
-        {/* ===== PRODUCT LIST ===== */}
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <main className="p-6">
-        {products.map((product) => (
-                <ProductList key={product.id} product={product} />
-              ))}
-    </main>
-        </div>
+     <div className="bg-white p-6 rounded-2xl shadow-md">
+  <main className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    {products.map((product) => (
+      <ProductList key={product.id} product={product} />
+    ))}
+  </main>
+  </div>
 
       </main>
     </div>
