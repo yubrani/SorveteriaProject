@@ -119,7 +119,9 @@ export async function deleteProduct(productId: number) {
     `;
   } catch (error) {
     console.error("Error deleting product:", error);
-    return { message: "Failed to delete product." };
+
+
+    throw new Error("Failed to delete product");
   }
 
   revalidatePath("/dashboard/products");

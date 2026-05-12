@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+import { auth } from "@/auth";
 import { getOrderById } from "@/app/lib/data";
 
 export default async function OrderDetailPage({
@@ -5,7 +7,22 @@ export default async function OrderDetailPage({
 }: {
   params: { id: string };
 }) {
-  const { order, items } = await getOrderById(Number(params.id));
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    notFound();
+  }
+
+  const data = await getOrderById(
+    Number(params.id),
+    Number(session.user.id)
+  );
+
+  if (!data) {
+    notFound();
+  }
+
+  const { order, items } = data;
 
   return (
     <div className="p-6">
