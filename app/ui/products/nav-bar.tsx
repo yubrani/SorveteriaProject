@@ -3,7 +3,7 @@ import {
   FaHome,
   FaUser,
   FaSearch,
-  FaClipboardList,
+  FaClipboardList, FaPencilAlt,
 } from "react-icons/fa";
 import { logoutAction } from "@/app/lib/actions/auth_actions";
 import { auth } from "@/auth";
@@ -65,7 +65,7 @@ export default async function NavBar() {
               {session.user.role === "admin" && (
                 <div className="">
                   <Link href={"/dashboard/products"}>
-                    <p className="text-sm px-4 flex items-center gap-2 text-slate-600 hover:text-indigo-600 transition">Editar Produtos</p>
+                    <p className="text-sm px-4 flex items-center gap-2 text-slate-600 hover:text-indigo-600 transition"><FaPencilAlt /></p>
                   </Link>
                 </div>
                 
