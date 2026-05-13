@@ -4,7 +4,7 @@ import { authenticate } from "../lib/actions/user_actions";
 import { useSearchParams } from "next/navigation";
 import { Button } from "./button"
 import { useActionState } from "react";
-
+import Link from "next/link";
 export default function LoginForm() {
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/";
@@ -53,6 +53,11 @@ export default function LoginForm() {
                     <Button type="submit">
                         Entrar
                     </Button>
+                    <div className="">
+                     <Link href="/login/create" className="text-blue-500 hover:underline">
+                        Nao tem conta? Crie uma aqui.
+                    </Link>
+                    </div>
                 </div>
             </div>
         </form>
