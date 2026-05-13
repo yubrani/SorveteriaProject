@@ -48,7 +48,7 @@ export default async function NavBar() {
         </div>
 
 
-        <div className="hidden md:flex items-center w-full max-w-md">
+        <div className="md:flex items-center w-full max-w-md">
           <div className="flex items-center gap-2 w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition">
             <FaSearch className="text-slate-400 w-4 h-4" />
             <div className="w-full">

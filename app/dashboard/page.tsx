@@ -29,9 +29,7 @@ export default async function ProductPage({
         </h1>
         
         <div className="flex items-center gap-4">
-          <button className="bg-red-500 text-white px-4 py-2 rounded-full font-medium hover:bg-red-600 transition">
-            <Link href="/dashboard/products/create">+ Novo produto</Link>
-          </button>
+        
 
           <Link
             href="/dashboard/cart"
