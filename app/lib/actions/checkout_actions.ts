@@ -52,11 +52,10 @@ export async function checkoutAction() {
     `;
   }
 
-  // 🧹 limpiar carrito (CORRECTO)
   await sql`
     DELETE FROM cart_items
     WHERE cart_id = ${cart.id}
   `;
 
-  redirect("/orders");
+  redirect("/dashboard/orders");
 }

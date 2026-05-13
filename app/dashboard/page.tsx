@@ -4,7 +4,6 @@ import ProductList from "@/app/ui/products/product-list";
 import { ShoppingCart } from "lucide-react";
 import { getCategories } from "@/app/lib/data";
 import CategoryCard from "@/app/ui/cards";
-
 export default async function ProductPage({
   searchParams,
 }: {
@@ -35,7 +34,7 @@ export default async function ProductPage({
           </button>
 
           <Link
-            href="/cart"
+            href="/dashboard/cart"
             className="relative bg-white border p-2 rounded-full shadow hover:shadow-md transition"
           >
             <ShoppingCart className="text-gray-700" />

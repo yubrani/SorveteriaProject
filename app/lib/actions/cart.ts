@@ -26,7 +26,7 @@ export async function removeFromCartAction(formData: FormData) {
   }
   await removeFromCart(itemId);
   
-  revalidatePath("/cart");
+  revalidatePath("/dashboard/cart");
 
 }
 
@@ -40,5 +40,5 @@ export async function updateCartItemQuantityAction(formData: FormData) {
 
   await updateCartItemQuantity(itemId, change);
   
-  revalidatePath("/cart");
+  revalidatePath("/dashboard/cart");
 }

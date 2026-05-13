@@ -1,14 +1,14 @@
 "use server";
 import { deleteOrder } from "@/app/lib/data";
 import { revalidatePath } from "next/cache";
-import { updateOrderStatus } from "@/app/lib/data";
+
 export async function deleteOrderAction(formData: FormData) {
   const orderId = Number(formData.get("orderId"));
     if (!orderId) {
     throw new Error("Order ID inválido");
   }
   await deleteOrder(orderId);
-  revalidatePath("/orders");
+  revalidatePath("/dashboard/orders");
 }
 
 export async function updateOrderAction(formData: FormData) {
@@ -18,5 +18,5 @@ export async function updateOrderAction(formData: FormData) {
   
 
     
-    revalidatePath("/orders/[orderId]" );
+    revalidatePath("/dashboard/orders/[orderId]" );
 }

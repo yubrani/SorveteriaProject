@@ -2,8 +2,8 @@
 
 import { getProducts } from "@/app/lib/data";
 import Link from "next/link";
-import ProductList from "@/app/ui/products/product-list";
-import  CreateProductForm  from "@/app/ui/products/create-product-forms";
+import ProductListEdit from "@/app/ui/products/product-list-edit";
+
 import { ShoppingCart } from 'lucide-react';
 export default async function ProductPage() {
   const products = await getProducts();
@@ -53,7 +53,7 @@ export default async function ProductPage() {
      <div className="bg-white p-6 rounded-2xl shadow-md">
   <main className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
     {products.map((product) => (
-      <ProductList key={product.id} product={product} />
+      <ProductListEdit key={product.id} product={product} />
     ))}
   </main>
   </div>
