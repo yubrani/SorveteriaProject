@@ -9,6 +9,12 @@ export type UserInfo = {
 
 
 }
+export type AuthUser = {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+};
 
 export type State ={
     errors?: {
@@ -52,3 +58,4 @@ export type Category = {
     image_url: string;
     
 };
+
