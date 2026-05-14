@@ -4,6 +4,7 @@ import ProductList from "@/app/ui/products/product-list";
 import { ShoppingCart } from "lucide-react";
 import { getCategories } from "@/app/lib/data";
 import CategoryCard from "@/app/ui/cards";
+import Image from "next/image";
 export default async function ProductPage({
   searchParams,
 }: {
@@ -24,8 +25,10 @@ export default async function ProductPage({
 
       {/* ===== HEADER ===== */}
       <header className="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-10">
+          <Image src="/urcaLogo.png" alt="Logo" width={60} height={60} />
         <h1 className="text-xl font-bold text-red-500">
-          🍦 Sorvetería
+          
+          Sorvetería
         </h1>
         
         <div className="flex items-center gap-4">
